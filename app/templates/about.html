@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+{% block title %}About{% endblock %}
+{% block content %}
+<div class="max-w-4xl mx-auto space-y-6">
+  <div>
+    <p class="text-sm text-slate-400">What this is</p>
+    <h2 class="text-3xl font-semibold">About Fake News Lab</h2>
+  </div>
+
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-4">
+    <p class="text-slate-200">A student-built playground for misinformation detection. Paste text or submit a URL, run a local HuggingFace classifier, and store the verdicts in MongoDB for later BI dashboards.</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-slate-200">
+      <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+        <p class="text-cyan-300 font-semibold mb-1">Local inference</p>
+        <p>Prompts stay on your machine—good for privacy and latency.</p>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+        <p class="text-cyan-300 font-semibold mb-1">Mongo trail</p>
+        <p>Every check is persisted with metadata for later analytics.</p>
+      </div>
+      <div class="rounded-xl border border-white/10 bg-slate-950/40 p-4">
+        <p class="text-cyan-300 font-semibold mb-1">Simple auth</p>
+        <p>Email/password via Flask-Login; easy to extend with OAuth.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-3 text-sm text-slate-200">
+    <h3 class="text-lg font-semibold text-slate-100">Tech stack</h3>
+    <ul class="list-disc list-inside space-y-1">
+      <li>Flask + Jinja for views</li>
+      <li>Tailwind for UI, no build step (CDN)</li>
+      <li>HuggingFace text-classification pipeline</li>
+      <li>MongoDB for storage, simple aggregates for insights</li>
+    </ul>
+    <p class="text-xs text-slate-400">Want to extend? Swap the model, add OAuth, layer in BI dashboards.</p>
+  </div>
+</div>
+{% endblock %}

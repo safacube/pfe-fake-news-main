@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <p class="text-sm text-slate-400">Private view</p>
+    <h2 class="text-3xl font-semibold">Your dashboard</h2>
+  </div>
+  <a href="{{ url_for('main.classify') }}" class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/25 hover:bg-cyan-400 transition">New analysis</a>
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <p class="text-sm text-slate-400">Your analyses</p>
+    <p class="text-4xl font-semibold text-cyan-300">{{ count_user }}</p>
+  </div>
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <p class="text-sm text-slate-400">Workspace total</p>
+    <p class="text-4xl font-semibold text-slate-100">{{ count_all }}</p>
+  </div>
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <p class="text-sm text-slate-400">Your fake ratio</p>
+    <p class="text-4xl font-semibold text-rose-200">{{ fake_share }}%</p>
+  </div>
+</div>
+
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold">Latest result</h3>
+      <a class="text-sm text-cyan-300 hover:text-cyan-200" href="{{ url_for('main.history') }}">View history</a>
+    </div>
+    {% if last_doc %}
+      <div class="space-y-2">
+        <div class="flex items-center gap-2 text-sm">
+          <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold {% if last_doc.model_label == 'Fake' %}bg-rose-500/20 text-rose-200{% else %}bg-emerald-500/20 text-emerald-200{% endif %}">{{ last_doc.model_label }}</span>
+          <span class="text-slate-400">{{ (last_doc.model_score or 0)|round(3) }}</span>
+          <span class="text-slate-500 text-xs">{{ last_doc.created_at.strftime('%b %d, %H:%M') if last_doc.created_at else '' }}</span>
+        </div>
+        <p class="text-sm text-slate-200 line-clamp-3 break-words">{{ last_doc.article_text }}</p>
+        {% if last_doc.meta and last_doc.meta.url %}
+          <p class="text-xs text-slate-400 line-clamp-1 break-all">{{ last_doc.meta.url }}</p>
+        {% endif %}
+      </div>
+    {% else %}
+      <p class="text-sm text-slate-400">No analyses yet. Run one to see details.</p>
+    {% endif %}
+  </div>
+
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <h3 class="text-lg font-semibold mb-3">Label distribution (you)</h3>
+    <div class="space-y-2 text-sm text-slate-200">
+      {% for label, count in label_counts.items() %}
+        <div class="flex items-center justify-between">
+          <span>{{ label }}</span>
+          <span class="text-slate-300">{{ count }}</span>
+        </div>
+      {% else %}
+        <p class="text-slate-400">No data yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% block title %}Fake News Lab{% endblock %}
+{% block content %}
+<section class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center py-6">
+  <div class="space-y-6">
+    <div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-cyan-200">LLM-Powered Credibility Checks</div>
+    <h1 class="text-4xl lg:text-5xl font-semibold leading-tight">Catch misinformation before it spreads.</h1>
+    <p class="text-lg text-slate-300 max-w-xl">Paste text or drop a link. We run a local HuggingFace detector, store the results, and surface unreliable sources so your team can react fast.</p>
+    <div class="flex flex-wrap gap-3">
+      <a href="{{ url_for('auth.register') }}" class="px-4 py-3 rounded-xl bg-cyan-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/25 hover:bg-cyan-400 transition">Get Started</a>
+      <a href="{{ url_for('auth.login') }}" class="px-4 py-3 rounded-xl border border-white/10 hover:border-cyan-400 text-slate-100 transition">Login</a>
+    </div>
+    <div class="grid grid-cols-3 gap-4 text-sm text-slate-300">
+      <div>
+        <p class="text-3xl font-semibold text-cyan-300">24/7</p>
+        <p>Local inference—no prompt leaves your machine.</p>
+      </div>
+      <div>
+        <p class="text-3xl font-semibold text-cyan-300">Mongo</p>
+        <p>Every decision is stored with metadata.</p>
+      </div>
+      <div>
+        <p class="text-3xl font-semibold text-cyan-300">Insights</p>
+        <p>Surface patterns: repeat bad domains, fake ratios.</p>
+      </div>
+    </div>
+  </div>
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-6 shadow-xl shadow-cyan-500/10">
+    <h3 class="text-lg font-semibold mb-4 flex items-center justify-between">
+      Latest analyses
+      <a class="text-xs text-cyan-300 hover:text-cyan-200" href="{{ url_for('auth.register') }}">Join to contribute</a>
+    </h3>
+    <div class="space-y-3">
+      {% for doc in articles %}
+        <div class="rounded-xl border border-white/5 bg-slate-950/40 p-4">
+          <div class="flex items-center justify-between text-sm">
+            <div class="flex items-center gap-2">
+              <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold {% if doc.model_label == 'Fake' %}bg-rose-500/20 text-rose-200{% else %}bg-emerald-500/20 text-emerald-200{% endif %}">{{ doc.model_label }}</span>
+              <span class="text-slate-400">{{ (doc.model_score or 0)|round(2) }}</span>
+            </div>
+            <span class="text-slate-500 text-xs">{{ doc.created_at.strftime('%b %d, %H:%M') if doc.created_at else '' }}</span>
+          </div>
+          
+
+
+          <p class="mt-2 text-sm text-slate-200 line-clamp-3 break-words">{{ doc.article_text[:220] }}{% if doc.article_text|length > 220 %}...{% endif %}</p>
+          {% if doc.meta and doc.meta.url %}
+            <p class="mt-1 text-xs text-slate-400 line-clamp-1 break-all">Source: {{ doc.meta.url|replace('https://','')|replace('http://','')|replace('www.','') }}</p>
+          {% endif %}
+        </div>
+      {% else %}
+        <p class="text-sm text-slate-400">No public analyses yet. Be the first.</p>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-1 lg:grid-cols-3 gap-6 py-6">
+  <div class="lg:col-span-2 rounded-2xl border border-white/10 bg-white/5 p-6">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-lg font-semibold">Unreliable frequent sources</h3>
+      <span class="text-xs text-slate-400">Last 200 fake labels</span>
+    </div>
+    <div class="space-y-3">
+      {% for src in top_sources %}
+        <div class="flex items-center justify-between rounded-xl border border-white/5 bg-slate-950/40 px-4 py-3">
+          <div class="flex items-center gap-3">
+            <span class="h-8 w-8 rounded-full bg-rose-500/20 text-rose-200 flex items-center justify-center font-semibold">{{ loop.index }}</span>
+            <div>
+              <p class="font-semibold text-slate-100">{{ src.domain }}</p>
+              <p class="text-xs text-slate-400">Flagged as fake in recent checks</p>
+            </div>
+          </div>
+          <span class="text-sm text-rose-200 font-semibold">{{ src.count }} hits</span>
+        </div>
+      {% else %}
+        <p class="text-sm text-slate-400">No patterns yet.</p>
+      {% endfor %}
+    </div>
+  </div>
+  <div class="rounded-2xl border border-white/10 bg-gradient-to-br from-cyan-500/20 via-slate-900 to-slate-950 p-6">
+    <h3 class="text-lg font-semibold mb-2">Why it matters</h3>
+    <ul class="space-y-3 text-sm text-slate-200">
+      <li class="flex gap-3"><span class="text-cyan-300">•</span> Keep a verifiable trail for BI dashboards.</li>
+      <li class="flex gap-3"><span class="text-cyan-300">•</span> Track repeat offenders across your users.</li>
+      <li class="flex gap-3"><span class="text-cyan-300">•</span> Private inference—no third-party prompt logging.</li>
+      <li class="flex gap-3"><span class="text-cyan-300">•</span> Share aggregated stats without exposing content.</li>
+    </ul>
+    <a href="{{ url_for('auth.register') }}" class="mt-4 inline-flex px-4 py-3 rounded-xl bg-cyan-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/25 hover:bg-cyan-400 transition">Create an account</a>
+  </div>
+</section>
+{% endblock %}

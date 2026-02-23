@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %}History{% endblock %}
+{% block content %}
+<div class="flex items-center justify-between mb-4">
+  <div>
+    <p class="text-sm text-slate-400">Your records</p>
+    <h2 class="text-2xl font-semibold">History</h2>
+  </div>
+  <a href="{{ url_for('main.classify') }}" class="px-4 py-2 rounded-xl bg-cyan-500 text-slate-950 font-semibold shadow-lg shadow-cyan-500/25 hover:bg-cyan-400 transition">New analysis</a>
+</div>
+
+<div class="space-y-3">
+  {% for doc in docs %}
+    <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+      <div class="flex items-center justify-between text-sm">
+        <div class="flex items-center gap-2">
+          <span class="inline-flex px-2 py-1 rounded-full text-xs font-semibold {% if doc.model_label == 'Fake' %}bg-rose-500/20 text-rose-200{% else %}bg-emerald-500/20 text-emerald-200{% endif %}">{{ doc.model_label }}</span>
+          <span class="text-slate-400">{{ '%.3f'|format(doc.model_score) }}</span>
+          <span class="text-slate-500 text-xs">{{ doc.input_type }}</span>
+        </div>
+        <span class="text-slate-500 text-xs">{{ doc.created_at.strftime('%Y-%m-%d %H:%M') if doc.created_at else '' }}</span>
+      </div>
+      <p class="mt-2 text-slate-200 text-sm line-clamp-3">{{ doc.article_text }}</p>
+      {% if doc.meta and doc.meta.url %}<p class="text-xs text-slate-400 mt-1">{{ doc.meta.url }}</p>{% endif %}
+    </div>
+  {% else %}
+    <p class="text-sm text-slate-400">No results yet.</p>
+  {% endfor %}
+</div>
+{% endblock %}
