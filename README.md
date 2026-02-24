@@ -18,12 +18,12 @@ Small Flask app for classifying news text or URLs with a local HuggingFace model
    - `MONGO_URI` MongoDB Atlas connection string
    - `MONGO_DB_NAME` database to use
    - `HUGGINGFACE_MODEL` optional override (defaults to mrm8488/bert-tiny-finetuned-fake-news-detection)
-5. First run will download the model; stay online once. Then start: `python run.py` and open http://localhost:5000.
+5. First run will download the model; stay online once. Then start: `` and open http://localhost:5000.
 
 ## How it works
 - `app/services/classifier.py` loads a text-classification pipeline and maps labels to Fake/Real.
 - `app/utils/scraper.py` fetches article text from a URL using readability and BeautifulSoup.
-- Classified documents go into `articles` collection with fields like `user_id`, `input_type`, `model_label`, `model_score`, `created_at`, and `meta` (URL/title/status).
+- Classifipython run.pyed documents go into `articles` collection with fields like `user_id`, `input_type`, `model_label`, `model_score`, `created_at`, and `meta` (URL/title/status).
 
 ## Structure
 - `app/auth` auth routes
