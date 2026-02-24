@@ -9,7 +9,8 @@ from ..utils.scraper import fetch_article_text
 
 main_bp = Blueprint('main', __name__, template_folder='../templates')
 
-
+#page d'accueil li fiha les articles les plus récents w top sources unreliable
+#hedhi ma fihecg @login_required 3lech? 7abina les visiteurs ychoufou les articles les plus récents w top sources unreliable hatta law ma 3andhomch compte
 @main_bp.route('/')
 def landing():
     db = current_app.mongo_client[current_app.config['MONGO_DB_NAME']]
@@ -31,7 +32,8 @@ def landing():
 
     return render_template('landing.html', articles=articles, top_sources=top_sources)
 
-
+#hedhi dashboard page li fiha les stats mta3 l'utilisateur w les articles les plus récents mta3ou w share mta3 les articles unreliable mta3ou w distribution mta3 les labels mta3ou
+# fiha @login_required 3lech? 7abina ken les utilisateurs li 3andhom compte ychoufou les stats mta3hom w les articles mta3hom w share mta3 les articles unreliable mta3hom w distribution mta3 les labels mta3hom
 @main_bp.route('/dashboard')
 @login_required
 def dashboard():
@@ -62,7 +64,7 @@ def history():
     docs = list(db.articles.find({'user_id': current_user.id}).sort('created_at', -1).limit(50))
     return render_template('history.html', docs=docs)
 
-
+#hedhi page mta3 classification li fiha form li y5alli l'utilisateur y3abi url wla text w y3ayet 3la classifier w y7otou database w yaffichi result mta3 classification
 @main_bp.route('/classify', methods=['GET', 'POST'])
 @login_required
 def classify():
@@ -71,6 +73,7 @@ def classify():
         raw_text = (request.form.get('article_text') or '').strip()
         url_value = (request.form.get('article_url') or '').strip()
 
+        #hedhi validation 3ala input type, ken url ykoun ma3abbi wla text ykoun ma3abbi bel fonction fetch_article_text w ken text ykoun ma3abbi bel fonction classify_text
         if input_type == 'url':
             if not url_value:
                 flash('Provide a URL to analyze.', 'error')
@@ -85,11 +88,12 @@ def classify():
             flash(msg or fallback, 'error')
             return render_template('classify.html', url_value=url_value, article_text=article_text, scrape_meta=scrape_meta)
 
+        #hedhi ta3ayet 3la classifier w t7otou database w yaffichi result mta3 classification
         result = classify_text(article_text)
         if result.get('label') == 'Error':
             flash(f"Model error: {result.get('error', 'Unknown issue')}", 'error')
             return render_template('classify.html', url_value=url_value, article_text=article_text, scrape_meta=scrape_meta)
-
+        #hedhi ta3ml insert lel result mta3 classification fel database mta3 l'utilisateur li 3amal request w t7otou fel collection mta3 articles w t7ot ma3ah meta data mta3 scraping w created_at w model label w model score w raw input w input type
         db = current_app.mongo_client[current_app.config['MONGO_DB_NAME']]
         doc = {
             'user_id': current_user.id,

@@ -47,10 +47,14 @@ def login():
         db = current_app.mongo_client[current_app.config['MONGO_DB_NAME']]
         doc = db.users.find_one({'email': email})
         user = User.from_document(doc)
+
+        #user mch mawjoud wla mdp incorrect
         if not user or not user.verify_password(password):
             flash('Invalid credentials.', 'error')
+            #traj3ou lel page login
             return render_template('login.html')
-
+        
+        #sinn kn mwjoudw mdp shiha thezou lel dashboard
         login_user(user)
         flash('Logged in successfully.', 'success')
         return redirect(url_for('main.dashboard'))
